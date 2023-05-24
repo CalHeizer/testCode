@@ -54,6 +54,9 @@ static NSString *CellIdentifier=@"CellIdentifier";
         self.isMineDialogMessageButton.titleLabel.font = [UIFont systemFontOfSize:12];
         self.isMineDialogMessageButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         self.isMineDialogMessageButton.titleLabel.numberOfLines = 0;
+        [self.contentView addSubview:self.headImageView];
+        [self.contentView addSubview:self.isMineDialogMessageButton];
+        
     }
     return self;
 }
@@ -122,9 +125,6 @@ static NSString *CellIdentifier=@"CellIdentifier";
         [self.headImageView setFrame:CGRectMake(self.contentView.frame.size.width - 55, 5, 50, 50)];
         [self.isMineDialogMessageButton setFrame:CGRectMake(self.contentView.frame.size.width - self.buttonWidth - 55, 5, self.buttonWidth, self.buttonHeight)];
     }
-    [self.contentView addSubview:self.headImageView];
-    [self.contentView addSubview:self.isMineDialogMessageButton];
-    
     
 }
 
