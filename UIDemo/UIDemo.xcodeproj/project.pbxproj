@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		487094872A1DC0650051652E /* ChatCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 487094862A1DC0650051652E /* ChatCollectionViewCell.m */; };
 		48C09D582A19335600A3F632 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C09D572A19335600A3F632 /* AppDelegate.m */; };
 		48C09D5B2A19335600A3F632 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C09D5A2A19335600A3F632 /* SceneDelegate.m */; };
 		48C09D632A19335800A3F632 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48C09D622A19335800A3F632 /* Assets.xcassets */; };
@@ -25,6 +26,7 @@
 		48C09DB02A19412200A3F632 /* addressbook.png in Resources */ = {isa = PBXBuildFile; fileRef = 48C09DAB2A19412200A3F632 /* addressbook.png */; };
 		48C09DB12A19412200A3F632 /* workbench.png in Resources */ = {isa = PBXBuildFile; fileRef = 48C09DAC2A19412200A3F632 /* workbench.png */; };
 		48C09DB22A19412200A3F632 /* chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 48C09DAD2A19412200A3F632 /* chat.png */; };
+		48D73B922A1E7A7200A28819 /* CollectionWfLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 48D73B912A1E7A7200A28819 /* CollectionWfLayout.m */; };
 		48E8C2D82A19FD5E00101367 /* ChatDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E8C2D72A19FD5E00101367 /* ChatDetailViewController.m */; };
 		48E8C2DB2A19FE3E00101367 /* ChatModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E8C2DA2A19FE3E00101367 /* ChatModalViewController.m */; };
 		48E8C3C82A1A4DE900101367 /* me.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 48E8C3BF2A1A4DE900101367 /* me.jpg */; };
@@ -64,6 +66,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		487094852A1DC0650051652E /* ChatCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatCollectionViewCell.h; sourceTree = "<group>"; };
+		487094862A1DC0650051652E /* ChatCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatCollectionViewCell.m; sourceTree = "<group>"; };
 		48C09D532A19335600A3F632 /* UIDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48C09D562A19335600A3F632 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		48C09D572A19335600A3F632 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -93,6 +97,8 @@
 		48C09DAB2A19412200A3F632 /* addressbook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addressbook.png; sourceTree = "<group>"; };
 		48C09DAC2A19412200A3F632 /* workbench.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = workbench.png; sourceTree = "<group>"; };
 		48C09DAD2A19412200A3F632 /* chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chat.png; sourceTree = "<group>"; };
+		48D73B902A1E7A7200A28819 /* CollectionWfLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollectionWfLayout.h; sourceTree = "<group>"; };
+		48D73B912A1E7A7200A28819 /* CollectionWfLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CollectionWfLayout.m; sourceTree = "<group>"; };
 		48E8C2D62A19FD5E00101367 /* ChatDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatDetailViewController.h; sourceTree = "<group>"; };
 		48E8C2D72A19FD5E00101367 /* ChatDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatDetailViewController.m; sourceTree = "<group>"; };
 		48E8C2D92A19FE3E00101367 /* ChatModalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatModalViewController.h; sourceTree = "<group>"; };
@@ -219,6 +225,10 @@
 				48E8C2D72A19FD5E00101367 /* ChatDetailViewController.m */,
 				48E8C2D92A19FE3E00101367 /* ChatModalViewController.h */,
 				48E8C2DA2A19FE3E00101367 /* ChatModalViewController.m */,
+				487094852A1DC0650051652E /* ChatCollectionViewCell.h */,
+				487094862A1DC0650051652E /* ChatCollectionViewCell.m */,
+				48D73B902A1E7A7200A28819 /* CollectionWfLayout.h */,
+				48D73B912A1E7A7200A28819 /* CollectionWfLayout.m */,
 			);
 			path = AppViewController;
 			sourceTree = "<group>";
@@ -423,7 +433,9 @@
 				48C09D9A2A19350000A3F632 /* EmailViewController.m in Sources */,
 				48C09D5B2A19335600A3F632 /* SceneDelegate.m in Sources */,
 				48E8C3E42A1A6FBA00101367 /* Message.m in Sources */,
+				487094872A1DC0650051652E /* ChatCollectionViewCell.m in Sources */,
 				48C09D912A19347100A3F632 /* AddBookViewController.m in Sources */,
+				48D73B922A1E7A7200A28819 /* CollectionWfLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

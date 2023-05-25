@@ -51,7 +51,7 @@
 		</dict>
 		<dict>
 			<key>msg</key>
-			<string>我们在一起也这么久了，我也试着让我喜欢上你，可是我无论怎么强迫自己都无法，对你有所感觉</string>
+			<string>我们在一起也这么久了，我也试着让我喜欢上你，可是我无论怎么强迫自己都无法对你有所感觉，真的很对不起你，是我的错误，十分抱歉，不好意思</string>
 			<key>ismine</key>
 			<false/>
 		</dict>
@@ -72,15 +72,15 @@
 		</dict>
 		<dict>
 			<key>msg</key>
-			<string>求求你了，明天老师就要</string>
+			<string>什么文档你说一说</string>
 			<key>ismine</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>msg</key>
-			<string>好吧</string>
+			<string>求求你了，明天老师就要，主要是关于项目的，就是那个方面级的情感分析，主要是国内外的研究现状，还有现有的一些方法的介绍，对了参考文献用EndNote导入统一处理。</string>
 			<key>ismine</key>
-			<true/>
+			<false/>
 		</dict>
 	</array>
 	<key>爱丽丝</key>

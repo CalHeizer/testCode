@@ -55,7 +55,7 @@
     
     WorkViewController *workViewController = [[WorkViewController alloc] init];
     UINavigationController *navigationController4 = [[UINavigationController alloc] initWithRootViewController:workViewController];
-    navigationController4.tabBarItem.title = @"工作台";
+    navigationController4.tabBarItem.title = @"聊天框";
     navigationController4.tabBarItem.image = [UIImage imageNamed:@"workbench"];
     
     EmailViewController *emailViewController = [[EmailViewController alloc] init];
