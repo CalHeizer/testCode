@@ -6,7 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "../Sqlite/SqliteHandle.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ChatDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
@@ -17,6 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic) UIToolbar *myToolbar;
 @property(strong, nonatomic) UIButton *myButton;
 @property(strong, nonatomic) NSString *name;
+
+@property(strong, nonatomic) NSString *rName;
+
+@property(assign, nonatomic) NSInteger ID;
+
+@property(assign, nonatomic) SqliteHandle *sqliteHandle;
+
+@property(assign, nonatomic) NSInteger rID;
+
+@property(assign, nonatomic) NSString *sqlPathName;
 
 @end
 

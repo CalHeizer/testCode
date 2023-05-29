@@ -22,13 +22,27 @@
     UINavigationController *navigationController = (UINavigationController *)self.parentViewController;
     self.navigationItem.title = navigationController.tabBarItem.title;
     
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"User" ofType:@"plist"];
-    
-    NSArray *userInfo = [[NSArray alloc] initWithContentsOfFile:plistPath];
-    
-    self.listData = [[NSMutableArray alloc] initWithArray:userInfo];
-    
-    
+//    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"User" ofType:@"plist"];
+//
+//    NSArray *userInfo = [[NSArray alloc] initWithContentsOfFile:plistPath];
+//
+//    self.listData = [[NSMutableArray alloc] initWithArray:userInfo];
+//
+    self.listData = [[NSMutableArray alloc] init];
+    NSString *sql = @"SELECT * FROM user;";
+    id sqlArray = [self.sqliteHandle selectSqlDataBase:self.sqlPathName SqlSent:sql];
+    if (sqlArray != nil) {
+        NSMutableArray *array = (NSMutableArray *)sqlArray;
+        for (NSDictionary *dict in array) {
+            NSNumber *temp = dict[@"user_id"];
+            NSString *name = dict[@"user_name"];
+            if ([name isEqualToString:self.myName]) {
+                self.my_id = temp;
+            }
+            NSDictionary *userDict = @{@"name": name, @"rid": temp};
+            [self.listData addObject:userDict];
+        }
+    }
     
 
 }
@@ -78,6 +92,10 @@
     
     ChatDetailViewController *detailViewController = [[ChatDetailViewController alloc] init];
     detailViewController.name = dict[@"name"];
+    detailViewController.ID = [self.my_id integerValue];
+    detailViewController.rID = [dict[@"rid"] integerValue];
+    detailViewController.sqliteHandle = self.sqliteHandle;
+    detailViewController.sqlPathName = self.sqlPathName;
     
     detailViewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:detailViewController animated:YES];

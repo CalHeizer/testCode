@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		486438F82A20409C002C9A4C /* SqliteHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 486438F72A20409C002C9A4C /* SqliteHandle.m */; };
+		486438FB2A2040B9002C9A4C /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 486438FA2A2040B9002C9A4C /* libsqlite3.tbd */; };
+		486438FE2A2057B4002C9A4C /* SqlReturn.m in Sources */ = {isa = PBXBuildFile; fileRef = 486438FD2A2057B4002C9A4C /* SqlReturn.m */; };
 		487094872A1DC0650051652E /* ChatCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 487094862A1DC0650051652E /* ChatCollectionViewCell.m */; };
 		48C09D582A19335600A3F632 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C09D572A19335600A3F632 /* AppDelegate.m */; };
 		48C09D5B2A19335600A3F632 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C09D5A2A19335600A3F632 /* SceneDelegate.m */; };
@@ -66,6 +69,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		486438F62A20409C002C9A4C /* SqliteHandle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SqliteHandle.h; sourceTree = "<group>"; };
+		486438F72A20409C002C9A4C /* SqliteHandle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SqliteHandle.m; sourceTree = "<group>"; };
+		486438FA2A2040B9002C9A4C /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		486438FC2A2057B4002C9A4C /* SqlReturn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SqlReturn.h; sourceTree = "<group>"; };
+		486438FD2A2057B4002C9A4C /* SqlReturn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SqlReturn.m; sourceTree = "<group>"; };
 		487094852A1DC0650051652E /* ChatCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatCollectionViewCell.h; sourceTree = "<group>"; };
 		487094862A1DC0650051652E /* ChatCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatCollectionViewCell.m; sourceTree = "<group>"; };
 		48C09D532A19335600A3F632 /* UIDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				486438FB2A2040B9002C9A4C /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +157,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		486438F52A204051002C9A4C /* Sqlite */ = {
+			isa = PBXGroup;
+			children = (
+				486438F62A20409C002C9A4C /* SqliteHandle.h */,
+				486438F72A20409C002C9A4C /* SqliteHandle.m */,
+				486438FC2A2057B4002C9A4C /* SqlReturn.h */,
+				486438FD2A2057B4002C9A4C /* SqlReturn.m */,
+			);
+			path = Sqlite;
+			sourceTree = "<group>";
+		};
+		486438F92A2040B9002C9A4C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				486438FA2A2040B9002C9A4C /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		48C09D4A2A19335600A3F632 = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +183,7 @@
 				48C09D712A19335800A3F632 /* UIDemoTests */,
 				48C09D7B2A19335800A3F632 /* UIDemoUITests */,
 				48C09D542A19335600A3F632 /* Products */,
+				486438F92A2040B9002C9A4C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -171,6 +200,7 @@
 		48C09D552A19335600A3F632 /* UIDemo */ = {
 			isa = PBXGroup;
 			children = (
+				486438F52A204051002C9A4C /* Sqlite */,
 				48E8C3D52A1A511600101367 /* imges */,
 				48E8C3BE2A1A4DE900101367 /* png */,
 				48C09DA82A19412200A3F632 /* icon */,
@@ -432,9 +462,11 @@
 				48C09D692A19335800A3F632 /* main.m in Sources */,
 				48C09D9A2A19350000A3F632 /* EmailViewController.m in Sources */,
 				48C09D5B2A19335600A3F632 /* SceneDelegate.m in Sources */,
+				486438F82A20409C002C9A4C /* SqliteHandle.m in Sources */,
 				48E8C3E42A1A6FBA00101367 /* Message.m in Sources */,
 				487094872A1DC0650051652E /* ChatCollectionViewCell.m in Sources */,
 				48C09D912A19347100A3F632 /* AddBookViewController.m in Sources */,
+				486438FE2A2057B4002C9A4C /* SqlReturn.m in Sources */,
 				48D73B922A1E7A7200A28819 /* CollectionWfLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

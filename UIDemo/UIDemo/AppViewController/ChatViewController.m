@@ -7,11 +7,13 @@
 
 #import "ChatViewController.h"
 #import "ChatDetailViewController.h"
+#import "../Sqlite/SqliteHandle.h"
 
 @interface ChatViewController ()
 
 @property (strong, nonatomic) NSMutableArray *listData;
 @property (strong, nonatomic) NSDictionary *dictData;
+
 
 @end
 
@@ -28,20 +30,70 @@
     
     NSLog(@"%@", fun);
     
-    NSString *userPath = [[NSBundle mainBundle] pathForResource:@"User" ofType:@"plist"];
-    NSArray *userInfo = [[NSArray alloc] initWithContentsOfFile:userPath];
-    self.listData = [[NSMutableArray alloc] init];
-    for (NSDictionary *dict in userInfo) {
-        NSString *strName = dict[@"name"];
-        NSArray *chatArray = self.dictData[strName];
-        NSString *chat = [chatArray lastObject][@"msg"] ;
-        NSDictionary *data = @{@"name" : strName, @"chat" : chat};
-        [self.listData addObject:data];
-    }
-    self.navigationItem.title = navigationController.tabBarItem.title;
+//    NSString *userPath = [[NSBundle mainBundle] pathForResource:@"User" ofType:@"plist"];
+//    NSArray *userInfo = [[NSArray alloc] initWithContentsOfFile:userPath];
+//    self.listData = [[NSMutableArray alloc] init];
+//    for (NSDictionary *dict in userInfo) {
+//        NSString *strName = dict[@"name"];
+//        NSArray *chatArray = self.dictData[strName];
+//        NSString *chat = [chatArray lastObject][@"msg"] ;
+//        NSDictionary *data = @{@"name" : strName, @"chat" : chat};
+//        [self.listData addObject:data];
+//    }
+//    self.navigationItem.title = navigationController.tabBarItem.title;
     
 }
 
+- (NSString *)jsonSerialization:(NSDictionary *)dict {
+    // 不同的类型 dict[@"message_type"] 不同的处理方式
+    NSData *data = dict[@"message_body"];
+    NSDictionary *ddd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+    return ddd[@"text"];
+}
+
+- (void)loadListData {
+    if (!_listData)
+        _listData = [[NSMutableArray alloc] init];
+    NSString *sql = @"SELECT * FROM user;";
+    id sqlArray = [self.sqliteHandle selectSqlDataBase:self.sqlPathName SqlSent:sql];
+    if (sqlArray != nil) {
+        NSNumber *my_id = nil;
+        NSMutableArray *array = (NSMutableArray *)sqlArray;
+        for (NSDictionary *dict in array) {
+            NSNumber *temp = dict[@"user_id"];
+            NSString *name = dict[@"user_name"];
+            NSInteger ids = [temp integerValue];
+            if ([name isEqualToString:self.myName]) {
+                // 如果是自己对自己发
+                my_id = temp;
+                sql = [[NSString alloc] initWithFormat:@"SELECT sender_id,receiver_id,message_type,message_body FROM message WHERE sender_id = %ld AND receiver_id = %ld ORDER BY timestamp DESC LIMIT 1;", ids, ids];
+                
+            } else
+                // 否者 使用 OR 会出现错误
+                sql = [[NSString alloc] initWithFormat:@"SELECT sender_id,receiver_id,message_type,message_body FROM message WHERE sender_id = %ld OR receiver_id = %ld ORDER BY timestamp DESC LIMIT 1;", ids, ids];
+            sqlArray = [self.sqliteHandle selectSqlDataBase:self.sqlPathName SqlSent:sql];
+            if (sqlArray != nil) {
+                NSMutableArray *sql2Array = (NSMutableArray *)sqlArray;
+                if (sql2Array.count == 0) continue;
+                NSDictionary *dict = [sql2Array lastObject];
+                NSNumber *sender_id = dict[@"sender_id"];
+                NSNumber *receiver_id = dict[@"receiver_id"];
+                NSString *chat = [self jsonSerialization:dict];
+                
+                
+                if ([sender_id isEqualToNumber:my_id]) {
+                    NSDictionary *data = @{@"name" : name, @"id" : sender_id, @"rid" : receiver_id, @"chat" : chat};
+                    [_listData addObject:data];
+                } else {
+                    NSDictionary *data = @{@"name" : name, @"id" : receiver_id, @"rid" : sender_id, @"chat" : chat};
+                    [_listData addObject:data];
+                }
+                    
+            }
+        }
+    }
+}
+//SELECT message_type,message_body FROM message WHERE sender_id = 1 OR receiver_id = 1 ORDER BY timestamp DESC LIMIT 1
 /*
 #pragma mark - Navigation
 
@@ -51,6 +103,13 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.listData removeAllObjects];
+    [self loadListData];
+    [self.tableView reloadData];
+}
 
 #pragma mark --实现表视图数据源方法
 
@@ -86,7 +145,13 @@
     
     ChatDetailViewController *detailViewController = [[ChatDetailViewController alloc] init];
     detailViewController.name = dict[@"name"];
+    detailViewController.ID = [dict[@"id"] integerValue];
+    detailViewController.rID = [dict[@"rid"] integerValue];
+    detailViewController.sqliteHandle = self.sqliteHandle;
+    detailViewController.sqlPathName = self.sqlPathName;
     detailViewController.hidesBottomBarWhenPushed = YES;
+    
+    
     [self.navigationController pushViewController:detailViewController animated:YES];
     
 }

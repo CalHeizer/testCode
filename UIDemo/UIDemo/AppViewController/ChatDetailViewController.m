@@ -161,10 +161,10 @@ static NSString *CellIdentifier=@"CellIdentifier";
     
     UIBarButtonItem *textfieldButtonItem =[[UIBarButtonItem alloc]initWithCustomView:self.myTextField];
     UIBarButtonItem *sendMessageButtonItem =[[UIBarButtonItem alloc]initWithTitle:@"发送" style:UIBarButtonItemStyleDone target:self action:@selector(sendMessage)];
-    UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *receiveMessageBuutonItem = [[UIBarButtonItem alloc]initWithTitle:@"接受" style:UIBarButtonItemStyleDone target:self action:@selector(receiveMessage)];
     
 
-    NSArray *textfieldArray=[[NSArray alloc]initWithObjects:textfieldButtonItem, flexibleSpace, sendMessageButtonItem,nil];
+    NSArray *textfieldArray=[[NSArray alloc]initWithObjects: sendMessageButtonItem, textfieldButtonItem, receiveMessageBuutonItem,nil];
     [self.myToolbar setItems:textfieldArray];
 }
 
@@ -187,25 +187,59 @@ static NSString *CellIdentifier=@"CellIdentifier";
     return self;
 }
 
+- (NSString *)jsonSerialization:(NSDictionary *)dict {
+    // 不同的类型 dict[@"message_type"] 不同的处理方式
+    NSData *data = dict[@"message_body"];
+    NSDictionary *ddd = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+    return ddd[@"text"];
+}
+
+- (void)loadSqlData {
+    //  SELECT * FROM message WHERE (sender_id = 1 AND receiver_id = 3) OR (sender_id = 3 AND receiver_id = 1) ORDER BY timestamp DESC LIMIT 1;
+//    NSString *sql = @"SELECT sender_id,receiver_id,message_body FROM message WHERE sender_id = 1 or" ;
+    NSString *sql = [NSString stringWithFormat:@"SELECT * FROM message WHERE (sender_id = %ld AND receiver_id = %ld) OR (sender_id = %ld AND receiver_id = %ld) ORDER BY timestamp;", self.ID, self.rID, self.rID, self.ID];
+    id sqlArray = [self.sqliteHandle selectSqlDataBase:self.sqlPathName SqlSent:sql];
+    if (sqlArray != nil) {
+        NSMutableArray *array = (NSMutableArray *)sqlArray;
+        for (NSDictionary *dict in array) {
+            Message *message = [[Message alloc] init];
+            NSNumber *s_id = dict[@"sender_id"];
+            NSNumber *r_id = dict[@"receiver_id"];
+            NSString *chat = [self jsonSerialization:dict];
+            NSInteger ssend_er = [s_id integerValue];
+            message.message = chat;
+            if (ssend_er == self.ID) {
+                message.isMine = YES;
+            } else {
+                message.isMine = NO;
+            }
+            [self.dialogMessages addObject:message];
+        }
+    }
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     if (!self.dialogMessages) {
         self.dialogMessages = [[NSMutableArray alloc]init];
     }
-    const NSString *MsgKey = @"msg";
-    const NSString *MineKey = @"ismine";
+//    const NSString *MsgKey = @"msg";
+//    const NSString *MineKey = @"ismine";
     
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"Chat" ofType:@"plist"];
-    NSDictionary *dataDict = [NSDictionary dictionaryWithContentsOfFile:path];
-    NSArray *dataArray = dataDict[self.name];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"Chat" ofType:@"plist"];
+//    NSDictionary *dataDict = [NSDictionary dictionaryWithContentsOfFile:path];
+//    NSArray *dataArray = dataDict[self.name];
+//
+//    [dataArray enumerateObjectsUsingBlock:^(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
+//        Message *message = [[Message alloc] init];
+//        message.message = dict[MsgKey];
+//        message.isMine = [dict[MineKey] boolValue];
+//        [self.dialogMessages addObject:message];
+//    }];//读取字典中的数据
+    [self loadSqlData];
     
-    [dataArray enumerateObjectsUsingBlock:^(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
-        Message *message = [[Message alloc] init];
-        message.message = dict[MsgKey];
-        message.isMine = [dict[MineKey] boolValue];
-        [self.dialogMessages addObject:message];
-    }];//读取字典中的数据
     [self loadTableView];
     [self loadToolbar];
         
@@ -229,12 +263,36 @@ static NSString *CellIdentifier=@"CellIdentifier";
     [self.view endEditing:YES];
 }
 
+- (void)insertSqlData:(Message *)message {
+    NSInteger sender_id, receiver_id;
+    if (message.isMine) {
+        sender_id = self.ID;
+        receiver_id = self.rID;
+    } else {
+        sender_id = self.rID;
+        receiver_id = self.ID;
+    }
+    NSString *sql = [NSString stringWithFormat:@"INSERT INTO message (sender_id, receiver_id, message_type, message_body) VALUES (%ld, %ld, '%@', ?);",sender_id,receiver_id,@"text"];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [dict setObject:message.message forKey:@"text"];
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingFragmentsAllowed error:nil];
+    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql NSData:data Index:4];
+}
+
+
+
 - (void)sendMessage{//完成输入响应函数
     Message *newMessage = [[Message alloc]init];
     newMessage.message = [[NSString alloc]initWithString:self.myTextField.text];
     newMessage.isMine =YES;
     [self.dialogMessages addObject:newMessage];
-    [self.tableView reloadData];
+    
+    [self insertSqlData:newMessage];
+    
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.dialogMessages.count - 1 inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//    [self.tableView reloadData];
     NSUInteger rowCount = [self.tableView numberOfRowsInSection:0];//设置滚动到底部
     NSIndexPath* indexPath = [NSIndexPath indexPathForRow:rowCount-1 inSection:0];
     [self.tableView scrollToRowAtIndexPath:indexPath
@@ -244,6 +302,27 @@ static NSString *CellIdentifier=@"CellIdentifier";
     
 }
 
+- (void)receiveMessage{//完成输入响应函数
+    Message *newMessage = [[Message alloc]init];
+    newMessage.message = [[NSString alloc]initWithString:self.myTextField.text];
+    newMessage.isMine =NO;
+    [self.dialogMessages addObject:newMessage];
+    
+    [self insertSqlData:newMessage];
+    
+    NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:self.dialogMessages.count - 1 inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//    [self.tableView reloadData];
+    NSUInteger rowCount = [self.tableView numberOfRowsInSection:0];//设置滚动到底部
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:rowCount-1 inSection:0];
+    [self.tableView scrollToRowAtIndexPath:indexPath
+                        atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+//    [self.myTextField resignFirstResponder];
+    self.myTextField.text =@"";
+    
+}
+
+
 //键盘出现时候调用的事件
 - (void) keyboardWillShow:(NSNotification *)note{
     NSDictionary *info = [note userInfo];
@@ -252,8 +331,9 @@ static NSString *CellIdentifier=@"CellIdentifier";
     
     self.myToolbar.frame = CGRectMake(0, self.view.frame.size.height - toolBarHeight - keyboardSize.height, self.view.frame.size.width, toolBarHeight);
     self.tableView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.myToolbar.frame.origin.y);
-    
+
     NSUInteger rowCount = [self.tableView numberOfRowsInSection:0];//设置滚动到底部
+    if (rowCount == 0) return;
     NSIndexPath* indexPath = [NSIndexPath indexPathForRow:rowCount-1 inSection:0];
     [self.tableView scrollToRowAtIndexPath:indexPath
                         atScrollPosition:UITableViewScrollPositionBottom animated:NO];

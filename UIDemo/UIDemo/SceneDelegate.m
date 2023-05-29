@@ -14,13 +14,87 @@
 
 #import "AppViewController/ChatDetailViewController.h"
 
+#import "Sqlite/SqliteHandle.h"
+
 @interface SceneDelegate ()
 
 @property (strong, nonatomic)UITabBarController* tabBarController;
 
+@property (strong, nonatomic)NSString *sqlPathName;
+
+@property (strong, nonatomic)SqliteHandle *sqliteHandle;
+
+@property (strong, nonatomic)NSString *myName;
+
 @end
 
 @implementation SceneDelegate
+
+- (NSString *)sqlPathName {
+    if (!_sqlPathName) {
+        NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        _sqlPathName = [docPath stringByAppendingPathComponent:@"chat.sqlite"];
+        NSLog(@"%@", _sqlPathName);
+        
+    }
+    return _sqlPathName;
+}
+
+- (SqliteHandle *)sqliteHandle {
+    if (!_sqliteHandle) {
+        _sqliteHandle = [[SqliteHandle alloc] init];
+    }
+    return _sqliteHandle;
+}
+
+
+- (void) initSqlDataBase {
+    
+    NSString *sql = @"CREATE TABLE IF NOT EXISTS user (user_id INTEGER PRIMARY KEY, user_name TEXT, image TEXT);";
+//    [self.sqliteHandle createSqlDataBase:self.sqlPathName SqlSent:sql];
+//    sql = @"CREATE TABLE IF NOT EXISTS message (message_id INTEGER PRIMARY KEY, sender_id INTEGER REFERENCES user(user_id), receiver_id INTEGER REFERENCES user(user_id), message_type TEXT, message_body BLOB, timestamp INTEGER DEFAULT (strftime('%s', 'now')));";
+//    [self.sqliteHandle createSqlDataBase:self.sqlPathName SqlSent:sql];
+//
+//    sql = @"INSERT INTO user (user_name, image) VALUES ('小强', '小强')";
+//    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql];
+//    sql = @"INSERT INTO user (user_name, image) VALUES ('小红', '小红')";
+//    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql];
+//    sql = @"INSERT INTO user (user_name, image) VALUES ('张三', '张三')";
+//    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql];
+//    sql = @"INSERT INTO user (user_name, image) VALUES ('小明', '小明')";
+//    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql];
+//    sql = @"INSERT INTO user (user_name, image) VALUES ('爱丽丝', '爱丽丝')";
+//    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql];
+        
+    NSDictionary *dict = @{@"text" : @"兄弟在不在"};
+    NSError *error;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingFragmentsAllowed error:&error];
+//    const void *bytes = [data bytes];
+//    NSUInteger length = [data length];
+//    NSMutableString *str = [[NSMutableString alloc] initWithString:@"0x"];
+//    for (NSUInteger i = 0; i<length; ++i) {
+//        uint8_t byte = *((uint8_t *)bytes + i);
+//        [str appendFormat:@"%x",byte];
+//    }
+    
+    
+    sql = [NSString stringWithFormat:@"INSERT INTO message (sender_id, receiver_id, message_type, message_body) VALUES (%d, %d, '%@', ?);",3,1,@"text"];
+//    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql];
+    [self.sqliteHandle insertSqlDataBase:self.sqlPathName SqlSent:sql NSData:data Index:4];
+    
+    
+    
+    sql = @"SELECT * FROM message WHERE sender_id = (SELECT user_id FROM user WHERE user_id = 3) AND receiver_id = (SELECT user_id FROM user WHERE user_id = 1);";
+    id message = [self.sqliteHandle selectSqlDataBase:self.sqlPathName SqlSent:sql];
+    if (message != nil) {
+        NSMutableArray *array = (NSMutableArray *)message;
+        for (NSDictionary *dict in array) {
+            NSData *ddd = dict[@"message_body"];
+            NSDictionary *dd = [NSJSONSerialization JSONObjectWithData:ddd options:NSJSONReadingAllowFragments error:&error];
+            NSLog(@"%@", dd[@"text"]);
+        }
+    }
+}
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
@@ -36,13 +110,22 @@
     
     self.tabBarController = [[UITabBarController alloc] init];
     
+//    [self initSqlDataBase];
+    self.myName = @"小强";
+    
     
     ChatViewController *chatViewController = [[ChatViewController alloc] init];
+    chatViewController.sqlPathName = self.sqlPathName;
+    chatViewController.sqliteHandle = self.sqliteHandle;
+    chatViewController.myName = self.myName;
     UINavigationController *navigationController1 = [[UINavigationController alloc] initWithRootViewController:chatViewController];
     navigationController1.tabBarItem.title = @"聊天";
     navigationController1.tabBarItem.image = [UIImage imageNamed:@"chat"];
     
     AddBookViewController *addBookViewController = [[AddBookViewController alloc] init];
+    addBookViewController.sqlPathName = self.sqlPathName;
+    addBookViewController.sqliteHandle = self.sqliteHandle;
+    addBookViewController.myName = self.myName;
     UINavigationController *navigationController2 = [[UINavigationController alloc] initWithRootViewController:addBookViewController];
     navigationController2.tabBarItem.title = @"通信录";
     navigationController2.tabBarItem.image = [UIImage imageNamed:@"addressbook"];
