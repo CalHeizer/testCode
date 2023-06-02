@@ -23,9 +23,6 @@
         [self.contentView addSubview:self.textLabel];
         [self.contentView addSubview:self.imageView];
         
-        
-//        self.layer.borderWidth = 1;
-//        self.layer.borderColor = [UIColor blackColor].CGColor;
         self.layer.cornerRadius = 3;
         self.backgroundColor = [UIColor grayColor];
     }

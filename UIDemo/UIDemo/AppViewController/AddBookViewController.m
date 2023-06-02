@@ -22,12 +22,7 @@
     UINavigationController *navigationController = (UINavigationController *)self.parentViewController;
     self.navigationItem.title = navigationController.tabBarItem.title;
     
-//    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"User" ofType:@"plist"];
-//
-//    NSArray *userInfo = [[NSArray alloc] initWithContentsOfFile:plistPath];
-//
-//    self.listData = [[NSMutableArray alloc] initWithArray:userInfo];
-//
+
     self.listData = [[NSMutableArray alloc] init];
     NSString *sql = @"SELECT * FROM user;";
     id sqlArray = [self.sqliteHandle selectSqlDataBase:self.sqlPathName SqlSent:sql];

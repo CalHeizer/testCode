@@ -30,18 +30,6 @@
     
     NSLog(@"%@", fun);
     
-//    NSString *userPath = [[NSBundle mainBundle] pathForResource:@"User" ofType:@"plist"];
-//    NSArray *userInfo = [[NSArray alloc] initWithContentsOfFile:userPath];
-//    self.listData = [[NSMutableArray alloc] init];
-//    for (NSDictionary *dict in userInfo) {
-//        NSString *strName = dict[@"name"];
-//        NSArray *chatArray = self.dictData[strName];
-//        NSString *chat = [chatArray lastObject][@"msg"] ;
-//        NSDictionary *data = @{@"name" : strName, @"chat" : chat};
-//        [self.listData addObject:data];
-//    }
-//    self.navigationItem.title = navigationController.tabBarItem.title;
-    
 }
 
 - (NSString *)jsonSerialization:(NSDictionary *)dict {
@@ -83,10 +71,13 @@
                 
                 if ([sender_id isEqualToNumber:my_id]) {
                     NSDictionary *data = @{@"name" : name, @"id" : sender_id, @"rid" : receiver_id, @"chat" : chat};
-                    [_listData addObject:data];
+                    NSMutableDictionary *ddata = [[NSMutableDictionary alloc] initWithDictionary:data];
+                    [_listData addObject:ddata];
                 } else {
                     NSDictionary *data = @{@"name" : name, @"id" : receiver_id, @"rid" : sender_id, @"chat" : chat};
-                    [_listData addObject:data];
+                    NSMutableDictionary *ddata = [[NSMutableDictionary alloc] initWithDictionary:data];
+
+                    [_listData addObject:ddata];
                 }
                     
             }
@@ -150,7 +141,7 @@
     detailViewController.sqliteHandle = self.sqliteHandle;
     detailViewController.sqlPathName = self.sqlPathName;
     detailViewController.hidesBottomBarWhenPushed = YES;
-    
+    detailViewController.listData = self.listData;
     
     [self.navigationController pushViewController:detailViewController animated:YES];
     

@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(strong, nonatomic) NSString *rName;
 
+@property(strong, nonatomic) NSMutableArray *listData;
+
 @property(assign, nonatomic) NSInteger ID;
 
 @property(assign, nonatomic) SqliteHandle *sqliteHandle;
@@ -27,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(assign, nonatomic) NSInteger rID;
 
 @property(assign, nonatomic) NSString *sqlPathName;
+
+
 
 @end
 

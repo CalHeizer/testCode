@@ -111,7 +111,7 @@ static NSString *CellIdentifier=@"CellIdentifier";
 - (void)layoutSubviews {
     [super layoutSubviews];
     NSLog(@"[yql] layoutSubviews: %@", NSStringFromCGRect(self.contentView.frame));
-    CGSize size = [self getSize: self.isMineDialogMessageButton.titleLabel.text];
+    CGSize size = [self getSize: self.isMineDialogMessageButton.titleLabel.text]; // 存在潜在的问题
     self.buttonWidth = size.width + 35;
     if(size.height + 25 < 50) {
         self.buttonHeight = 50;
@@ -133,6 +133,8 @@ static NSString *CellIdentifier=@"CellIdentifier";
 @interface ChatDetailViewController ()
 
 @property (assign, nonatomic) CGRect lastFrame;
+
+@property (assign, nonatomic) BOOL isKeyWord;
 
 @end
 
@@ -224,20 +226,7 @@ static NSString *CellIdentifier=@"CellIdentifier";
     if (!self.dialogMessages) {
         self.dialogMessages = [[NSMutableArray alloc]init];
     }
-//    const NSString *MsgKey = @"msg";
-//    const NSString *MineKey = @"ismine";
-    
-    
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"Chat" ofType:@"plist"];
-//    NSDictionary *dataDict = [NSDictionary dictionaryWithContentsOfFile:path];
-//    NSArray *dataArray = dataDict[self.name];
-//
-//    [dataArray enumerateObjectsUsingBlock:^(NSDictionary *dict, NSUInteger idx, BOOL *stop) {
-//        Message *message = [[Message alloc] init];
-//        message.message = dict[MsgKey];
-//        message.isMine = [dict[MineKey] boolValue];
-//        [self.dialogMessages addObject:message];
-//    }];//读取字典中的数据
+
     [self loadSqlData];
     
     [self loadTableView];
@@ -285,7 +274,7 @@ static NSString *CellIdentifier=@"CellIdentifier";
 - (void)sendMessage{//完成输入响应函数
     Message *newMessage = [[Message alloc]init];
     newMessage.message = [[NSString alloc]initWithString:self.myTextField.text];
-    newMessage.isMine =YES;
+    newMessage.isMine = YES;
     [self.dialogMessages addObject:newMessage];
     
     [self insertSqlData:newMessage];
@@ -305,7 +294,11 @@ static NSString *CellIdentifier=@"CellIdentifier";
 - (void)receiveMessage{//完成输入响应函数
     Message *newMessage = [[Message alloc]init];
     newMessage.message = [[NSString alloc]initWithString:self.myTextField.text];
-    newMessage.isMine =NO;
+    if (self.rID == self.ID)
+        newMessage.isMine = YES;
+    else
+        newMessage.isMine = NO;
+
     [self.dialogMessages addObject:newMessage];
     
     [self insertSqlData:newMessage];
@@ -348,6 +341,14 @@ static NSString *CellIdentifier=@"CellIdentifier";
     [self.myTextField resignFirstResponder];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSUInteger rowCount = [self.tableView numberOfRowsInSection:0];//设置滚动到底部
+    if (rowCount == 0) return;
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:rowCount-1 inSection:0];
+    [self.tableView scrollToRowAtIndexPath:indexPath
+                        atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -432,7 +433,6 @@ static NSString *CellIdentifier=@"CellIdentifier";
     NSString *strName = [[NSString alloc] init];
     if (msg.isMine == YES) strName = @"小强";
     else strName = self.name;
-    
     [cell updateData:msg ofName:strName];
     return cell;
 }
